@@ -1,7 +1,7 @@
 
 Write-Host "Patching HTML files for portable hosting..."
 
-$htmlFiles = Get-ChildItem -Path "out" -Filter "*.html" -Recurse
+$htmlFiles = Get-ChildItem -Path "docs" -Filter "*.html" -Recurse
 
 foreach ($file in $htmlFiles) {
     $content = Get-Content $file.FullName -Raw
@@ -20,4 +20,4 @@ foreach ($file in $htmlFiles) {
     Write-Host "Patched $($file.Name)"
 }
 
-Write-Host "Success! The 'out' folder is now fully portable."
+Write-Host "Success! The 'docs' folder is now fully portable."

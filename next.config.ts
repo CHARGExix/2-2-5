@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-
-  // Makes all JS/CSS/image URLs relative
-  assetPrefix: "./",
+  distDir: 'docs', // Output to 'docs' folder for GitHub Pages
+  // Use relative paths for assets so it works on any subdirectory (GitHub Pages or Local)
+  assetPrefix: './',
 
   // Disable basePath so it doesn't force a specific root
   // basePath: '',
