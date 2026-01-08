@@ -1,65 +1,125 @@
-import Image from "next/image";
+'use client';
+
+import React, { useRef } from 'react';
+import { useScroll, useTransform, motion } from 'framer-motion';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ScrollSequence from './components/ScrollSequence';
 
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll progress of the main container
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  // Text Overlay Opacity Transforms
+  const opacityIntro = useTransform(scrollYProgress, [0, 0.1, 0.2], [1, 1, 0]);
+  const scaleIntro = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  const opacityFeature1 = useTransform(scrollYProgress, [0.2, 0.3, 0.4, 0.5], [0, 1, 1, 0]);
+  const yFeature1 = useTransform(scrollYProgress, [0.2, 0.3, 0.5], [50, 0, -50]);
+
+  const opacityFeature2 = useTransform(scrollYProgress, [0.5, 0.6, 0.7, 0.8], [0, 1, 1, 0]);
+  const xFeature2 = useTransform(scrollYProgress, [0.5, 0.6], [50, 0]);
+
+  const opacityCTA = useTransform(scrollYProgress, [0.8, 0.9, 1], [0, 1, 1]);
+  const scaleCTA = useTransform(scrollYProgress, [0.8, 0.9], [0.9, 1]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <main className="bg-black text-white selection:bg-red-500 selection:text-white">
+      <Navbar />
+
+      {/* Scroll Container */}
+      <div ref={containerRef} className="relative h-[600vh]">
+
+        {/* Sticky Viewport */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          {/* Background Sequence */}
+          <div className="absolute inset-0 w-full h-full z-0">
+            <ScrollSequence
+              progress={scrollYProgress}
+              frames={240}
+              imagesPath="./burger/ezgif-frame-"
+              imageExtension=".jpg"
+              padZeros={3}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          {/* Content Overlays - Pointer events none ensures scroll works over them */}
+          <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex flex-col justify-center items-center">
+
+            {/* Intro Section */}
+            <motion.div
+              style={{ opacity: opacityIntro, scale: scaleIntro }}
+              className="absolute inset-0 flex flex-col items-center justify-center text-center p-6"
+            >
+              <h1 className="text-6xl md:text-9xl font-bold tracking-tighter mb-4 mix-blend-overlay">
+                THE <br /> BURGER
+              </h1>
+              <p className="text-xl md:text-2xl font-light tracking-wide max-w-lg text-neutral-300">
+                Experience the art of flavor.
+              </p>
+              <div className="mt-8">
+                <div className="animate-bounce text-white/50 text-sm">SCROLL TO DISCOVER</div>
+              </div>
+            </motion.div>
+
+            {/* Feature 1 - Left Aligned */}
+            <motion.div
+              style={{ opacity: opacityFeature1, y: yFeature1 }}
+              className="absolute inset-0 flex items-center justify-start p-8 md:p-24"
+            >
+              <div className="max-w-xl text-left pl-4 md:pl-0 border-l-4 border-red-600 md:border-l-0">
+                <h2 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
+                  FRESHLY FLAME-GRILLED
+                </h2>
+                <p className="text-lg md:text-2xl text-neutral-300 leading-relaxed font-light">
+                  Perfection takes time. Our patties are seared to lock in juices,
+                  creating that signature char and smoky aroma you crave.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Feature 2 - Right Aligned */}
+            <motion.div
+              style={{ opacity: opacityFeature2, x: xFeature2 }}
+              className="absolute inset-0 flex items-center justify-end p-8 md:p-24"
+            >
+              <div className="max-w-xl text-right pr-4 md:pr-0 border-r-4 border-yellow-500 md:border-r-0">
+                <h2 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight text-white">
+                  LOCALLY SOURCED
+                </h2>
+                <p className="text-lg md:text-2xl text-neutral-300 leading-relaxed font-light">
+                  From farm to table. We partner with local growers to bring you
+                  crisp lettuce, ripe tomatoes, and artisan buns baked daily.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* CTA Section */}
+            <motion.div
+              style={{ opacity: opacityCTA, scale: scaleCTA }}
+              className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-black/40 backdrop-blur-sm"
+            >
+              <h2 className="text-5xl md:text-8xl font-bold mb-8 tracking-tighter">
+                TASTE THE <br /> DIFFERENCE.
+              </h2>
+              <button className="pointer-events-auto px-8 py-4 bg-white text-black text-lg font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all transform hover:scale-105 rounded-full">
+                Reserve Your Table
+              </button>
+            </motion.div>
+
+          </div>
+
+          {/* Gradient Vignette for better text readability */}
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] z-1 mix-blend-multiply" />
         </div>
-      </main>
-    </div>
+      </div>
+
+      <Footer />
+    </main>
   );
 }
